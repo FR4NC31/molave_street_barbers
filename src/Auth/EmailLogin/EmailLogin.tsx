@@ -21,6 +21,8 @@ const validateEmail = (email: string): boolean => {
   return emailRegex.test(email);
 };
 
+type LoginStatus = 'idle' | 'loading' | 'success' | 'error';
+
 export default function EmailLogin() {
   const [fontsLoaded] = useFonts({
     'Satoshi-Bold': require('../../Assets/Fonts/Satoshi-Bold.otf'),
@@ -33,6 +35,9 @@ export default function EmailLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [loginStatus, setLoginStatus] = useState<LoginStatus>('idle');
+  const [loginMessage, setLoginMessage] = useState('');
+  
   const navigation = useNavigation<LoginOptionsNavigationProp>();
   const { signIn, loading: authLoading } = useAuth(); // Use auth context
 
@@ -44,10 +49,10 @@ export default function EmailLogin() {
     );
   }
 
-      const [isLoading, setIsLoading] = useState(false); // Add loading state
-
-      const handleLogin = async () => {
-        setIsLoading(true); // Set loading to true when login is initiated
+  const handleLogin = async () => {
+    setLoginStatus('loading');
+    setLoginMessage('Signing in...');
+    
     // Reset errors
     setEmailError('');
     setPasswordError('');
@@ -55,16 +60,19 @@ export default function EmailLogin() {
     // Validate inputs
     if (!email.trim()) {
       setEmailError('Please enter your email');
+      setLoginStatus('idle');
       return;
     }
 
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
+      setLoginStatus('idle');
       return;
     }
 
     if (!password.trim()) {
       setPasswordError('Please enter your password');
+      setLoginStatus('idle');
       return;
     }
 
@@ -76,19 +84,16 @@ export default function EmailLogin() {
       const result = await signIn(email, password);
       
       if (result.data) {
-        Alert.alert(
-          'Success',
-          'Login successful!',
-          [
-            { 
-              text: 'OK', 
-              onPress: () => navigation.reset({
-                index: 0,
-                routes: [{ name: 'Home' }],
-              })
-            }
-          ]
-        );
+        setLoginStatus('success');
+        setLoginMessage('Login successful!');
+        
+        // Navigate to home after a short delay to show success icon
+        setTimeout(() => {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          });
+        }, 1500);
       } else {
         // Handle specific error cases
         let errorMessage = result.error?.message || 'Login failed. Please check your credentials.';
@@ -108,11 +113,44 @@ export default function EmailLogin() {
           errorMessage = 'Invalid email or password. Please try again.';
         }
         
-        Alert.alert('Login Error', errorMessage);
+        setLoginStatus('error');
+        setLoginMessage(errorMessage);
       }
     } catch (error: any) {
       console.error('Login failed:', error);
-      Alert.alert('Error', 'Login failed. Please try again.');
+      setLoginStatus('error');
+      setLoginMessage('Login failed. Please try again.');
+    }
+  };
+
+  const renderStatusIndicator = () => {
+    switch (loginStatus) {
+      case 'loading':
+        return (
+          <View className="flex-row items-center justify-center mb-4">
+            <ActivityIndicator size="small" color="#000" className="mr-2" />
+            <Text className="text-black font-satoshimedium">{loginMessage}</Text>
+          </View>
+        );
+      
+      case 'success':
+        return (
+          <View className="flex-row items-center justify-center mb-4">
+            <AntDesign name="check" size={20} color="#22c55e" className="mr-2" />
+            <Text className="text-green-600 font-satoshimedium">{loginMessage}</Text>
+          </View>
+        );
+      
+      case 'error':
+        return (
+          <View className="flex-row items-center justify-center mb-4">
+            <AntDesign name="close" size={20} color="#ef4444" className="mr-2" />
+            <Text className="text-red-500 font-satoshimedium">{loginMessage}</Text>
+          </View>
+        );
+      
+      default:
+        return null;
     }
   };
 
@@ -123,7 +161,7 @@ export default function EmailLogin() {
         <TouchableOpacity 
           onPress={() => navigation.goBack()} 
           className="w-8"
-          disabled={authLoading}
+          disabled={authLoading || loginStatus === 'loading'}
         >
           <AntDesign name="arrowleft" size={28} color="black" />
         </TouchableOpacity>
@@ -138,6 +176,9 @@ export default function EmailLogin() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1 px-5 mt-10"
       >
+        {/* Status Indicator */}
+        {renderStatusIndicator()}
+
         <View className="mb-4">
           <Text className="font-satoshibold text-base mb-2">Email</Text>
           <TextInput
@@ -147,7 +188,7 @@ export default function EmailLogin() {
             onChangeText={setEmail}
             autoCapitalize="none"
             keyboardType="email-address"
-            editable={!authLoading}
+            editable={!authLoading && loginStatus !== 'loading'}
           />
           {emailError && <Text className="text-red-500 text-sm mt-1">{emailError}</Text>}
         </View>
@@ -161,12 +202,12 @@ export default function EmailLogin() {
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
-              editable={!authLoading}
+              editable={!authLoading && loginStatus !== 'loading'}
             />
             <TouchableOpacity 
               className="absolute right-3 top-4"
               onPress={() => setShowPassword(!showPassword)}
-              disabled={authLoading}
+              disabled={authLoading || loginStatus === 'loading'}
             >
               <Entypo 
                 name={showPassword ? 'eye-with-line' : 'eye'} 
@@ -178,18 +219,21 @@ export default function EmailLogin() {
           {passwordError && <Text className="text-red-500 text-sm mt-1">{passwordError}</Text>}
         </View>
 
-        <TouchableOpacity className="items-end mb-8" disabled={authLoading}>
+        <TouchableOpacity 
+          className="items-end mb-8" 
+          disabled={authLoading || loginStatus === 'loading'}
+        >
           <Text className="font-satoshibold text-black">Forgot your Password?</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
           className={`rounded-3xl py-4 items-center justify-center ${
-            authLoading || !email || !password ? 'bg-gray-400' : 'bg-black'
+            authLoading || loginStatus === 'loading' || !email || !password ? 'bg-gray-400' : 'bg-black'
           }`}
           onPress={handleLogin}
-          disabled={authLoading || !email || !password}
+          disabled={authLoading || loginStatus === 'loading' || !email || !password}
         >
-          {authLoading ? (
+          {authLoading || loginStatus === 'loading' ? (
             <ActivityIndicator color="white" />
           ) : (
             <Text className="text-white font-satoshibold text-base">Log in</Text>
@@ -200,7 +244,7 @@ export default function EmailLogin() {
           <Text className="font-satoshibold text-gray-600">Don't have an account? </Text>
           <TouchableOpacity 
             onPress={() => navigation.navigate('SignupOptions')}
-            disabled={authLoading}
+            disabled={authLoading || loginStatus === 'loading'}
           >
             <Text className="font-satoshibold text-black">Sign up</Text>
           </TouchableOpacity>
