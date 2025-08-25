@@ -44,7 +44,10 @@ export default function EmailLogin() {
     );
   }
 
-  const handleLogin = async () => {
+      const [isLoading, setIsLoading] = useState(false); // Add loading state
+
+      const handleLogin = async () => {
+        setIsLoading(true); // Set loading to true when login is initiated
     // Reset errors
     setEmailError('');
     setPasswordError('');
@@ -90,12 +93,19 @@ export default function EmailLogin() {
         // Handle specific error cases
         let errorMessage = result.error?.message || 'Login failed. Please check your credentials.';
         
-        if (errorMessage.includes('Invalid login credentials')) {
-          errorMessage = 'Invalid email or password. Please try again.';
+        if (errorMessage.includes('User account does not exist')) {
+          errorMessage = 'User account does not exist. Please sign up.';
+        } else if (errorMessage.includes('Invalid password')) {
+          errorMessage = 'Invalid password. Please try again.';
         } else if (errorMessage.includes('Email not confirmed')) {
           errorMessage = 'Please verify your email before logging in.';
         } else if (errorMessage.includes('too many requests')) {
           errorMessage = 'Too many attempts. Please try again later.';
+        } else if (errorMessage.includes('Invalid Refresh Token')) {
+          errorMessage = 'Your session has expired. Please log in again.';
+          console.log('Invalid Refresh Token detected, prompting user to log in again.');
+        } else if (errorMessage.includes('Invalid login credentials')) {
+          errorMessage = 'Invalid email or password. Please try again.';
         }
         
         Alert.alert('Login Error', errorMessage);

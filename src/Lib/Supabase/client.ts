@@ -10,5 +10,11 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,
+    flowType: 'pkce', // Use PKCE flow for better security
   },
+  global: {
+    headers: {
+      'X-Client-Info': 'molave-street-barbers'
+    }
+  }
 });

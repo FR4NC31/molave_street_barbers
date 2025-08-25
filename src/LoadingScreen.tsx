@@ -1,4 +1,4 @@
-import { View, Text, Animated } from 'react-native';
+import { View, Text, Animated, Image } from 'react-native';
 import { useFonts } from 'expo-font';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useRef } from 'react';
@@ -70,15 +70,15 @@ export default function LoadingScreen() {
 
   return (
     <View className='flex-1 items-center justify-center bg-white'>
-      <Animated.Text 
+      <Animated.Image 
         style={{
           opacity: fadeAnim,
           transform: [{ scale: scaleAnim }]
         }}
         className='text-5xl font-satoshibold text-black'
-      >
-        LOGO ANIMATED
-      </Animated.Text>
+        source={require('./Assets/logo.gif')}
+        resizeMode="contain"
+      />
       
       {/* Optional: Add a small loading indicator */}
       <Animated.View 
