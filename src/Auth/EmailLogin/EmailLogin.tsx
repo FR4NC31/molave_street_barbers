@@ -128,7 +128,7 @@ export default function EmailLogin() {
       case 'loading':
         return (
           <View className="flex-row items-center justify-center mb-4">
-            <ActivityIndicator size="small" color="#000" className="mr-2" />
+            <ActivityIndicator size="small" color="#000" style={{marginRight: 8}} />
             <Text className="text-black font-satoshimedium">{loginMessage}</Text>
           </View>
         );
@@ -136,7 +136,7 @@ export default function EmailLogin() {
       case 'success':
         return (
           <View className="flex-row items-center justify-center mb-4">
-            <AntDesign name="check" size={20} color="#22c55e" className="mr-2" />
+            <AntDesign name="check" size={20} color="#22c55e" style={{marginRight: 8}} />
             <Text className="text-green-600 font-satoshimedium">{loginMessage}</Text>
           </View>
         );
@@ -144,7 +144,7 @@ export default function EmailLogin() {
       case 'error':
         return (
           <View className="flex-row items-center justify-center mb-4">
-            <AntDesign name="close" size={20} color="#ef4444" className="mr-2" />
+            <AntDesign name="close" size={20} color="#ef4444" style={{marginRight: 8}} />
             <Text className="text-red-500 font-satoshimedium">{loginMessage}</Text>
           </View>
         );

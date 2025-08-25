@@ -35,7 +35,11 @@
         "reactNativeDirectoryCheck": {
           "listUnknownPackages": false
         }
+      },
+      "eas": {
+        "projectId": "5bcd1876-b060-48f1-8260-8ab35c9cd267"
       }
-    }
+    },
+    "owner": "fr4nc"
   }
 }
