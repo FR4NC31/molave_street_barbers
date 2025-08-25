@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { useFonts } from 'expo-font'
 import { useNavigation } from '@react-navigation/native'
@@ -23,6 +23,9 @@ export default function GetStarted() {
   const navigation = useNavigation<GetStartedNavigationProp>();
   return (
     <View className='flex-1 items-center justify-center'>
+      <Image className='text-5xl font-satoshibold text-black'
+        source={require('./Assets/slipper-slipper-slap.gif')}
+        resizeMode="contain"/>
       <View className='absolute bottom-20 mt-200'>
         {/* Sign up button */}
         <TouchableOpacity onPress={() => navigation.navigate('SignupOptions')} className='bg-black px-40 rounded-3xl py-3'>
