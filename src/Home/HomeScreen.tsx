@@ -62,7 +62,7 @@ export default function HomeScreen() {
             require('../Assets/temp5.png'), 
           ]} 
           />
-          <View className='h-[85px] w-screen'/>
+          {/* <View className='h-[75px] w-screen'/> */}
         </ScrollView>
         {/* Fixed Bottom Tab */}
         <View className='absolute -bottom-6 left-0 right-0'>

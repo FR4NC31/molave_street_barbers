@@ -57,7 +57,7 @@ const Carousel: React.FC<CarouselProps> = ({
       >
         <Image
           source={item}
-          className="w-[90%] h-[75%] top-16 rounded-3xl"
+          className="w-[90%] h-[75%] -top-4 rounded-3xl"
           resizeMode="cover"
         />
       </View>
@@ -68,7 +68,7 @@ const Carousel: React.FC<CarouselProps> = ({
     if (!images || images.length <= 1) return null;
     
     return (
-      <View className="flex-row justify-center items-center">
+      <View className="flex-row bottom-20 justify-center items-center">
         {images.map((_, index) => {
           const opacity = scrollX.interpolate({
             inputRange: [
