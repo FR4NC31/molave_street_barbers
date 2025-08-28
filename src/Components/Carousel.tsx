@@ -98,7 +98,7 @@ const Carousel: React.FC<CarouselProps> = ({
     if (!images || images.length <= 1) return null;
     
     return (
-      <View className="absolute top-44 right-14 bg-black/70 px-3 py-1 rounded-lg z-10">
+      <View className="absolute top-24 right-14 bg-black/70 px-3 py-1 rounded-lg z-10">
         <Text className="text-white text-sm font-medium">
           {currentIndex + 1}/{images.length}
         </Text>

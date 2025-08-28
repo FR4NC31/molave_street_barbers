@@ -7,7 +7,12 @@ import Octicons from '@expo/vector-icons/Octicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Feather from '@expo/vector-icons/Feather';
 
-export default function BottomTabNavigator() {
+interface BottomTabNavigatorProps {
+  activeTab: string;
+  onTabPress: (tab: string) => void;
+}
+
+export default function BottomTabNavigator({ activeTab, onTabPress }: BottomTabNavigatorProps) {
 
    const [fontsLoaded] = useFonts({
         'Satoshi-Bold': require('../Assets/Fonts/Satoshi-Bold.otf'),
@@ -19,17 +24,17 @@ export default function BottomTabNavigator() {
   return (
     <View className='fixed bottom-0 left-0 right-0' style={{backgroundColor: 'white', borderTopWidth: 1, borderTopColor: '#e5e7eb', zIndex: 20}}>
       <View className='flex-row justify-center items-center h-16'>
-        <TouchableOpacity className='flex-1 justify-center items-center'>
-          <Octicons name="home" size={24} color="black" />
-          <Text className='text-sm font-satoshibold mt-1'>Home</Text>
+        <TouchableOpacity className='flex-1 justify-center items-center' onPress={() => onTabPress('Home')}>
+          <Octicons name="home" size={24} color={activeTab === 'Home' ? "black" : "gray"} />
+          <Text className='text-sm font-satoshibold mt-1' style={{ color: activeTab === 'Home' ? "black" : "gray" }}>Home</Text>
         </TouchableOpacity>
-        <TouchableOpacity className='flex-1 justify-center items-center'>
-          <MaterialCommunityIcons name="stool-outline" size={24} color="gray" />
-          <Text className='text-sm font-satoshibold text-gray-500 mt-1'>Appointments</Text>
+        <TouchableOpacity className='flex-1 justify-center items-center' onPress={() => onTabPress('Appointments')}>
+          <MaterialCommunityIcons name="stool-outline" size={24} color={activeTab === 'Appointments' ? "black" : "gray"} />
+          <Text className='text-sm font-satoshibold mt-1' style={{ color: activeTab === 'Appointments' ? "black" : "gray" }}>Appointments</Text>
         </TouchableOpacity>
-        <TouchableOpacity className='flex-1 justify-center items-center'>
-          <Feather name="user" size={24} color="gray" />
-          <Text className='text-sm font-satoshibold text-gray-500 mt-1'>Profile</Text>
+        <TouchableOpacity className='flex-1 justify-center items-center' onPress={() => onTabPress('Profile')}>
+          <Feather name="user" size={24} color={activeTab === 'Profile' ? "black" : "gray"} />
+          <Text className='text-sm font-satoshibold mt-1' style={{ color: activeTab === 'Profile' ? "black" : "gray" }}>Profile</Text>
         </TouchableOpacity>
       </View>
     </View>
