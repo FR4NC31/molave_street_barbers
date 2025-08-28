@@ -29,7 +29,7 @@ export default function UserNamePasswordScreen({
   error
 }: UserNamePasswordScreenProps) {
   return (
-    <View className="flex-1 bg-white px-5 pt-10">
+    <View className="flex-1 px-5 pt-14">
       <TouchableOpacity onPress={goBack} className="w-8 mb-6">
         <AntDesign name="arrowleft" size={28} color="black" />
       </TouchableOpacity>
@@ -42,8 +42,8 @@ export default function UserNamePasswordScreen({
         {/* Username Input */}
         <Text className="font-satoshibold text-base mb-2 text-gray-800">Username</Text>
         <TextInput
-          className="bg-gray-100 rounded-lg p-4 font-satoshibold border border-gray-200"
-          placeholder="Choose a username"
+          className="bg-gray-300 rounded-lg p-4 font-satoshibold border border-gray-200"
+          placeholder="Enter your username"
           value={username}
           onChangeText={setUsername}
           autoCapitalize="none"
@@ -54,7 +54,7 @@ export default function UserNamePasswordScreen({
         <Text className="font-satoshibold text-base mb-2 text-gray-800 mt-6">Password</Text>
         <View className="relative">
           <TextInput
-            className={`bg-gray-100 rounded-lg p-4 font-satoshibold border ${error ? 'border-red-500' : 'border-gray-200'}`}
+            className={`bg-gray-300 rounded-lg p-4 font-satoshibold border ${error ? 'border-red-500' : 'border-gray-200'}`}
             placeholder="Create a password"
             value={password}
             onChangeText={setPassword}
@@ -78,7 +78,7 @@ export default function UserNamePasswordScreen({
 
       {/* Next Button - This should call handleNext */}
       <TouchableOpacity 
-        className={`bg-black rounded-xl py-4 items-center justify-center mt-8 ${
+        className={`bg-black rounded-3xl py-3 items-center justify-center mt-8 ${
           (!username || !password || loading) ? 'opacity-50' : ''
         }`}
         onPress={handleNext} // This should call the handleNext function

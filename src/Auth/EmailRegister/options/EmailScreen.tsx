@@ -21,7 +21,7 @@ export const EmailScreen = ({
   error 
 }: EmailScreenProps) => {
   return (
-    <View className="flex-1 bg-white px-5 pt-10">
+    <View className="flex-1 px-5 pt-14">
       <TouchableOpacity onPress={goBack} className="w-8 mb-6">
         <AntDesign name="arrowleft" size={28} color="black" />
       </TouchableOpacity>
@@ -33,7 +33,7 @@ export const EmailScreen = ({
       <View className="mt-12">
         <Text className="font-satoshibold text-base mb-2 text-gray-800">Email</Text>
         <TextInput
-          className={`bg-gray-100 rounded-lg p-4 font-satoshibold border ${error ? 'border-red-500' : 'border-gray-200'}`}
+          className={`bg-gray-300 rounded-lg p-4 font-satoshibold border ${error ? 'border-red-500' : 'border-gray-200'}`}
           placeholder="Enter your email"
           value={email}
           onChangeText={setEmail}
@@ -49,7 +49,7 @@ export const EmailScreen = ({
       </View>
 
       <TouchableOpacity 
-        className={`bg-black rounded-xl py-4 items-center justify-center mt-8 ${
+        className={`bg-black rounded-3xl py-3 items-center justify-center mt-8 ${
           (!email || loading) ? 'opacity-50' : ''
         }`}
         onPress={handleNext}

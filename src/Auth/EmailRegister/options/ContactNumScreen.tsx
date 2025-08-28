@@ -23,12 +23,12 @@ export default function ContactNumberScreen({
   loading,
 }: Props) {
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1">
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"
       >
-        <View className="px-5 pt-10">
+        <View className="px-5 pt-14">
           <TouchableOpacity onPress={goBack} className="w-8 mb-6">
             <AntDesign name="arrowleft" size={28} color="black" />
           </TouchableOpacity>
@@ -43,7 +43,7 @@ export default function ContactNumberScreen({
               Contact Number
             </Text>
             <TextInput
-              className="bg-gray-100 rounded-lg p-4 font-satoshibold border border-gray-200"
+              className="bg-gray-300 rounded-lg p-4 font-satoshibold border border-gray-200"
               placeholder="Enter your phone number"
               placeholderTextColor="#6b7280"
               value={contactNumber}
@@ -67,32 +67,32 @@ export default function ContactNumberScreen({
             />
             <View className="flex-1">
               <View className="flex-row flex-wrap">
-                <TouchableOpacity>
-                  <Text className="font-satoshibold text-sm text-black">
-                    Molave Street Barbers
-                  </Text>
-                </TouchableOpacity>
                 <Text className="font-satoshibold text-sm text-gray-800">
-                  {' '}
-                  may send me personalized emails regarding products and services. (Optional)
+                  Molave Street Barbers may send me personalized emails regarding products and services. (Optional)
                 </Text>
               </View>
 
-              <Text className="font-satoshibold text-sm text-gray-800 mt-2">
-                By clicking Create Account, you agree to the{' '}
+              <View className="flex-row flex-wrap mt-2">
+                <Text className="font-satoshibold text-sm text-gray-800">
+                  By clicking Create Account, you agree to the{' '}
+                </Text>
                 <TouchableOpacity>
-                  <Text className="font-satoshibold text-sm text-black underline">
+                  <Text className="font-satoshibold text-sm text-black">
                     Terms of Service
                   </Text>
-                </TouchableOpacity>{' '}
-                and{' '}
+                </TouchableOpacity>
+                <Text className="font-satoshibold text-sm text-gray-800">
+                  {' '}and{' '}
+                </Text>
                 <TouchableOpacity>
-                  <Text className="font-satoshibold text-sm text-black underline">
+                  <Text className="font-satoshibold text-sm text-black">
                     Privacy Policy
                   </Text>
-                </TouchableOpacity>{' '}
-                of Molave Street's Barbers.
-              </Text>
+                </TouchableOpacity>
+                <Text className="font-satoshibold text-sm text-gray-800">
+                  {' '}of Molave Street's Barbers.
+                </Text>
+              </View>
             </View>
           </View>
 

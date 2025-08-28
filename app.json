@@ -1,14 +1,15 @@
 {
   "expo": {
-    "name": "molave_street_barbers",
+    "name": "MLV St.",
     "slug": "molave_street_barbers",
+    "scheme": "mlv-st",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/app-icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/app-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/app-icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
@@ -37,7 +38,14 @@
         }
       },
       "eas": {
-        "projectId": "5bcd1876-b060-48f1-8260-8ab35c9cd267"
+        "projectId": "5bcd1876-b060-48f1-8260-8ab35c9cd267",
+        "build": {
+          "preview": {
+            "android": {
+              "buildType": "apk"
+            }
+          }
+        }
       }
     },
     "owner": "fr4nc"

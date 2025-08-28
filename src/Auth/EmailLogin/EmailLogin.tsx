@@ -1,10 +1,12 @@
-import { View, Text, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, TextInput, SafeAreaView, Platform, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, TextInput, Platform, Alert } from 'react-native';
+import StatusBarWrapper from '../../Components/StatusBarWrapper';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../Types/navigation';
 import { useFonts } from 'expo-font';
 import React, { useState } from 'react';
-import { useAuth } from '../../Context/AuthContext'; // Use auth context instead of direct supabase
+import { useAuth } from '../../Context/AuthContext';
+import NetInfo from '@react-native-community/netinfo';
 
 // Icons
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -36,10 +38,10 @@ export default function EmailLogin() {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loginStatus, setLoginStatus] = useState<LoginStatus>('idle');
-  const [loginMessage, setLoginMessage] = useState('');
+  const [networkError, setNetworkError] = useState('');
   
   const navigation = useNavigation<LoginOptionsNavigationProp>();
-  const { signIn, loading: authLoading } = useAuth(); // Use auth context
+  const { signIn, loading: authLoading } = useAuth();
 
   if (!fontsLoaded) {
     return (
@@ -51,7 +53,7 @@ export default function EmailLogin() {
 
   const handleLogin = async () => {
     setLoginStatus('loading');
-    setLoginMessage('Signing in...');
+    setNetworkError('');
     
     // Reset errors
     setEmailError('');
@@ -76,6 +78,17 @@ export default function EmailLogin() {
       return;
     }
 
+    // Check network connectivity
+    const networkState = await NetInfo.fetch();
+    if (!networkState.isConnected) {
+      setNetworkError('No internet connection. Please check your network and try again.');
+      setLoginStatus('error');
+      setTimeout(() => {
+        setLoginStatus('idle');
+      }, 3000);
+      return;
+    }
+
     try {
       if (__DEV__) {
         console.log('Attempting login with:', { email: email.trim() });
@@ -85,7 +98,6 @@ export default function EmailLogin() {
       
       if (result.data) {
         setLoginStatus('success');
-        setLoginMessage('Login successful!');
         
         // Navigate to home after a short delay to show success icon
         setTimeout(() => {
@@ -95,69 +107,65 @@ export default function EmailLogin() {
           });
         }, 1500);
       } else {
-        // Handle specific error cases
-        let errorMessage = result.error?.message || 'Login failed. Please check your credentials.';
-        
-        if (errorMessage.includes('User account does not exist')) {
-          errorMessage = 'User account does not exist. Please sign up.';
-        } else if (errorMessage.includes('Invalid password')) {
-          errorMessage = 'Invalid password. Please try again.';
-        } else if (errorMessage.includes('Email not confirmed')) {
-          errorMessage = 'Please verify your email before logging in.';
-        } else if (errorMessage.includes('too many requests')) {
-          errorMessage = 'Too many attempts. Please try again later.';
-        } else if (errorMessage.includes('Invalid Refresh Token')) {
-          errorMessage = 'Your session has expired. Please log in again.';
-          console.log('Invalid Refresh Token detected, prompting user to log in again.');
-        } else if (errorMessage.includes('Invalid login credentials')) {
-          errorMessage = 'Invalid email or password. Please try again.';
+        // Handle specific error messages from signIn
+        if (result.error && result.error.message) {
+          if (result.error.message.includes('Invalid login credentials')) {
+            setNetworkError('Invalid email or password. Please try again.');
+          } else if (result.error.message.includes('Email not confirmed')) {
+            setNetworkError('Please verify your email before logging in.');
+          } else if (result.error.message.includes('Network Error') || 
+                     result.error.message.includes('Network request failed')) {
+            setNetworkError('Network error. Please check your internet connection and try again.');
+          } else {
+            setNetworkError(result.error.message);
+          }
+        } else {
+          setNetworkError('Login failed. Please try again.');
         }
-        
         setLoginStatus('error');
-        setLoginMessage(errorMessage);
+        
+        // Reset error status after 3 seconds
+        setTimeout(() => {
+          setLoginStatus('idle');
+        }, 3000);
       }
     } catch (error: any) {
       console.error('Login failed:', error);
+      
+      // Handle network errors specifically
+      if (error.message && (error.message.includes('Network Error') || 
+                            error.message.includes('Network request failed'))) {
+        setNetworkError('Network error. Please check your internet connection and try again.');
+      } else {
+        setNetworkError('Login failed. Please try again.');
+      }
+      
       setLoginStatus('error');
-      setLoginMessage('Login failed. Please try again.');
+      
+      // Reset error status after 3 seconds
+      setTimeout(() => {
+        setLoginStatus('idle');
+      }, 3000);
     }
   };
 
-  const renderStatusIndicator = () => {
+  const getButtonStyle = () => {
     switch (loginStatus) {
       case 'loading':
-        return (
-          <View className="flex-row items-center justify-center mb-4">
-            <ActivityIndicator size="small" color="#000" style={{marginRight: 8}} />
-            <Text className="text-black font-satoshimedium">{loginMessage}</Text>
-          </View>
-        );
-      
+        return 'bg-gray-400';
       case 'success':
-        return (
-          <View className="flex-row items-center justify-center mb-4">
-            <AntDesign name="check" size={20} color="#22c55e" style={{marginRight: 8}} />
-            <Text className="text-green-600 font-satoshimedium">{loginMessage}</Text>
-          </View>
-        );
-      
+        return 'bg-green-500';
       case 'error':
-        return (
-          <View className="flex-row items-center justify-center mb-4">
-            <AntDesign name="close" size={20} color="#ef4444" style={{marginRight: 8}} />
-            <Text className="text-red-500 font-satoshimedium">{loginMessage}</Text>
-          </View>
-        );
-      
+        return 'bg-red-500';
       default:
-        return null;
+        return !email || !password ? 'bg-gray-400' : 'bg-black';
     }
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <StatusBarWrapper className="flex-1">
       {/* Header */}
-      <View className="px-5 mt-4 pt-10">
+      <View className="px-5 pt-8">
         <TouchableOpacity 
           onPress={() => navigation.goBack()} 
           className="w-8"
@@ -176,13 +184,10 @@ export default function EmailLogin() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1 px-5 mt-10"
       >
-        {/* Status Indicator */}
-        {renderStatusIndicator()}
-
         <View className="mb-4">
           <Text className="font-satoshibold text-base mb-2">Email</Text>
           <TextInput
-            className={`bg-gray-100 rounded-lg p-4 font-satoshiregular ${emailError ? 'border border-red-500' : ''}`}
+            className={`bg-gray-300 rounded-lg p-4 font-satoshiregular ${emailError ? 'border border-red-500' : ''}`}
             placeholder="Enter your email"
             value={email}
             onChangeText={setEmail}
@@ -197,7 +202,7 @@ export default function EmailLogin() {
           <Text className="font-satoshibold text-base mb-2">Password</Text>
           <View className="relative">
             <TextInput
-              className={`bg-gray-100 rounded-lg p-4 font-satoshiregular pr-12 ${passwordError ? 'border border-red-500' : ''}`}
+              className={`bg-gray-300 rounded-lg p-4 font-satoshiregular pr-12 ${passwordError ? 'border border-red-500' : ''}`}
               placeholder="Enter your password"
               value={password}
               onChangeText={setPassword}
@@ -219,6 +224,13 @@ export default function EmailLogin() {
           {passwordError && <Text className="text-red-500 text-sm mt-1">{passwordError}</Text>}
         </View>
 
+        {/* Network Error Message */}
+        {networkError ? (
+          <View className="mb-4 p-3 bg-red-100 rounded-lg">
+            <Text className="text-red-700 text-sm text-center">{networkError}</Text>
+          </View>
+        ) : null}
+
         <TouchableOpacity 
           className="items-end mb-8" 
           disabled={authLoading || loginStatus === 'loading'}
@@ -227,14 +239,16 @@ export default function EmailLogin() {
         </TouchableOpacity>
 
         <TouchableOpacity 
-          className={`rounded-3xl py-4 items-center justify-center ${
-            authLoading || loginStatus === 'loading' || !email || !password ? 'bg-gray-400' : 'bg-black'
-          }`}
+          className={`rounded-3xl py-4 items-center justify-center ${getButtonStyle()}`}
           onPress={handleLogin}
-          disabled={authLoading || loginStatus === 'loading' || !email || !password}
+          disabled={authLoading || loginStatus === 'loading' || loginStatus === 'success' || !email || !password}
         >
-          {authLoading || loginStatus === 'loading' ? (
+          {loginStatus === 'loading' ? (
             <ActivityIndicator color="white" />
+          ) : loginStatus === 'success' ? (
+            <AntDesign name="check" size={24} color="white" />
+          ) : loginStatus === 'error' ? (
+            <AntDesign name="close" size={24} color="white" />
           ) : (
             <Text className="text-white font-satoshibold text-base">Log in</Text>
           )}
@@ -250,6 +264,6 @@ export default function EmailLogin() {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </StatusBarWrapper>
   );
 }

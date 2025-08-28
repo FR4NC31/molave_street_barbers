@@ -20,9 +20,9 @@ export default function DisplayNameScreen({
   error 
 }: Props) {
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1">
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
-        <View className="px-5 pt-10">
+        <View className="px-5 pt-14">
           <TouchableOpacity onPress={goBack} className="w-8 mb-6">
             <AntDesign name="arrowleft" size={28} color="black" />
           </TouchableOpacity>
@@ -32,7 +32,7 @@ export default function DisplayNameScreen({
           <View className="mt-12">
             <Text className="font-satoshibold text-base mb-2 text-gray-800">Display Name</Text>
             <TextInput
-              className={`bg-gray-100 rounded-lg p-4 font-satoshibold border ${error ? 'border-red-500' : 'border-gray-200'}`}
+              className={`bg-gray-300 rounded-lg p-4 font-satoshibold border ${error ? 'border-red-500' : 'border-gray-200'}`}
               placeholder="Enter your name"
               placeholderTextColor="#6b7280"
               value={displayName}

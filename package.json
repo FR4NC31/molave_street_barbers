@@ -1,5 +1,5 @@
 {
-  "name": "molave_street_barbers",
+  "name": "MLV St.",
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
@@ -10,12 +10,15 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.1.2",
+    "@react-native-community/netinfo": "^11.4.1",
     "@react-navigation/native-stack": "^7.3.25",
     "@supabase/supabase-js": "^2.55.0",
     "@types/react-native-dotenv": "^0.2.2",
     "expo": "53.0.22",
     "expo-checkbox": "~4.1.4",
+    "expo-dev-client": "^5.2.4",
     "expo-font": "~13.3.2",
+    "expo-secure-store": "~14.2.4",
     "expo-status-bar": "~2.2.3",
     "expo-system-ui": "~5.0.11",
     "nativewind": "^4.1.23",
@@ -26,8 +29,7 @@
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
     "react-native-vector-icons": "^10.3.0",
-    "tailwindcss": "^3.4.17",
-    "expo-secure-store": "~14.2.4"
+    "tailwindcss": "^3.4.17"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
