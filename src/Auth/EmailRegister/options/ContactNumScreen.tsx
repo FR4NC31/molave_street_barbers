@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, KeyboardAvoidingView, SafeAreaView, Platform, ActivityIndicator } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Checkbox from 'expo-checkbox';
@@ -22,13 +22,50 @@ export default function ContactNumberScreen({
   goBack,
   loading,
 }: Props) {
+  const [formatError, setFormatError] = useState('');
+
+  const formatPhoneNumber = (input: string) => {
+    // Remove all non-digit characters
+    const digits = input.replace(/\D/g, '');
+    
+    // Limit to 10 digits
+    const limitedDigits = digits.slice(0, 10);
+    
+    // Format as XXX-XXX-XXXX
+    let formatted = '';
+    if (limitedDigits.length > 0) {
+      formatted = limitedDigits;
+      if (limitedDigits.length > 3) {
+        formatted = `${limitedDigits.slice(0, 3)}-${limitedDigits.slice(3)}`;
+      }
+      if (limitedDigits.length > 6) {
+        formatted = `${limitedDigits.slice(0, 3)}-${limitedDigits.slice(3, 6)}-${limitedDigits.slice(6)}`;
+      }
+    }
+    
+    return formatted;
+  };
+
+  const handlePhoneNumberChange = (text: string) => {
+    const formatted = formatPhoneNumber(text);
+    setContactNumber(formatted);
+    
+    // Validate format
+    const digits = text.replace(/\D/g, '');
+    if (digits.length > 0 && digits.length !== 10) {
+      setFormatError('Phone number must be 10 digits');
+    } else {
+      setFormatError('');
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1">
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"
       >
-        <View className="px-5 pt-14">
+        <View className="px-5 pt-14 ">
           <TouchableOpacity onPress={goBack} className="w-8 mb-6">
             <AntDesign name="arrowleft" size={28} color="black" />
           </TouchableOpacity>
@@ -42,18 +79,26 @@ export default function ContactNumberScreen({
             <Text className="font-satoshibold text-base mb-2 text-gray-800">
               Contact Number
             </Text>
-            <TextInput
-              className="bg-gray-300 rounded-lg p-4 font-satoshibold border border-gray-200"
-              placeholder="Enter your phone number"
-              placeholderTextColor="#6b7280"
-              value={contactNumber}
-              onChangeText={setContactNumber}
-              autoCapitalize="none"
-              keyboardType="phone-pad"
-              returnKeyType="done"
-              onSubmitEditing={handleSubmit}
-              editable={!loading}
-            />
+            <View className="flex-row items-center">
+              <View className="bg-gray-300 rounded-l-lg p-4 font-satoshibold border border-gray-200 border-r-0">
+                <Text className="text-gray-800">+63</Text>
+              </View>
+              <TextInput
+                className="flex-1 bg-gray-300 rounded-r-lg p-4 font-satoshibold border border-gray-200"
+                placeholder="XXX-XXX-XXXX"
+                placeholderTextColor="#6b7280"
+                value={contactNumber}
+                onChangeText={handlePhoneNumberChange}
+                autoCapitalize="none"
+                keyboardType="phone-pad"
+                returnKeyType="done"
+                onSubmitEditing={handleSubmit}
+                editable={!loading}
+              />
+            </View>
+            <Text className="font-satoshiregular text-xs text-gray-600 mt-1">
+              Format: +63 followed by your 10-digit mobile number
+            </Text>
           </View>
 
           {/* Checkbox + Terms */}

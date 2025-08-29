@@ -1,10 +1,14 @@
-# Bottom Tab Permanent Position Implementation
+# Dropdown Implementation Plan for BarbersData.tsx
 
 ## Steps to Complete:
-- [x] Modify HomeScreen.tsx to separate ScrollView content from BottomTab
-- [x] Update BottomTab.tsx for proper fixed positioning
-- [x] Add white background with border to BottomTab
-- [x] Test the implementation
+1. [ ] Create custom dropdown component with React Native components
+2. [ ] Add dropdown icon using React Native Vector Icons
+3. [ ] Add placeholder text "Select your barber"
+4. [ ] Implement dropdown show/hide functionality
+5. [ ] Add barber options list with selection handling
+6. [ ] Style with NativeWind/Tailwind CSS to match project design
+7. [ ] Test the dropdown functionality
 
-## Current Status:
-COMPLETED - BottomTab is now permanently fixed at the bottom with white background and border
+## Completed:
+- [x] Analysis of project structure and requirements
+- [x] Plan confirmation from user

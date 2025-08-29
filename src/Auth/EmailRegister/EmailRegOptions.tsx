@@ -117,12 +117,25 @@ export default function EmailRegisterOptions() {
       return;
     }
 
+    // Validate phone number format: must be 10 digits (excluding +63)
+    const phoneNumberDigits = contact_number.replace(/\D/g, ''); // Remove non-digit chars
+    if (phoneNumberDigits.length !== 10) {
+      Alert.alert('Error', 'Phone number must be 10 digits long (excluding country code)');
+      return;
+    }
+
     if (!isChecked) {
       Alert.alert('Error', 'Please accept the terms and conditions');
       return;
     }
 
     setLoading(true);
+
+    // Ensure contact number includes +63 prefix
+    let formattedContactNumber = contact_number.trim();
+    if (!formattedContactNumber.startsWith('+63')) {
+      formattedContactNumber = '+63' + formattedContactNumber;
+    }
     
     try {
       // Create user with Supabase Auth
@@ -133,7 +146,7 @@ export default function EmailRegisterOptions() {
           data: {
             display_name: display_name.trim(),
             username: username.trim(),
-            contact_number: contact_number.trim()
+            contact_number: formattedContactNumber
           }
         }
       });

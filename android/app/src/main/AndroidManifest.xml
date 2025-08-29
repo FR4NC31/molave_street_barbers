@@ -25,6 +25,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="mlv-st"/>
+        <data android:scheme="exp+molavestreetbarbers"/>
       </intent-filter>
     </activity>
   </application>

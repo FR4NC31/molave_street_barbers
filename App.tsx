@@ -14,12 +14,7 @@ import SignupOptions from './src/Auth/SignupOptions';
 import EmailLogin from './src/Auth/EmailLogin/EmailLogin';
 import EmailRegOptions from './src/Auth/EmailRegister/EmailRegOptions';
 import Home from './src/Home/HomeScreen'
-
-// 👉 Import the new ones
-import UserNamePasswordScreen from './src/Auth/EmailRegister/options/UserPassScreen';
-import ContactNumberScreen from './src/Auth/EmailRegister/options/ContactNumScreen';
-import DisplayNameScreen from './src/Auth/EmailRegister/options/DisplayNameScreen';
-import {EmailScreen} from './src/Auth/EmailRegister/options/EmailScreen';
+import Appointment from './src/Home/Appointments/AppointmentPage'
 
 // If using TypeScript, extend your root stack param list
 type RootStackParamList = {
@@ -29,11 +24,8 @@ type RootStackParamList = {
   SignupOptions: undefined;
   EmailLogin: undefined;
   EmailRegOptions: undefined;
-  UseNamePasswordScreen: undefined;
-  ContactNumberScreen: undefined;
-  DisplayNameScreen: undefined;
-  EmailScreen: undefined;
   Home: undefined;
+  Appointment: undefined
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -62,12 +54,8 @@ export default function App() {
           <Stack.Screen name="EmailLogin" component={EmailLogin} />
           <Stack.Screen name="EmailRegOptions" component={EmailRegOptions} />
           <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Appointment" component={Appointment} />
 
-          {/* 👉 Add new screens here */}
-          <Stack.Screen name="UseNamePasswordScreen" component={UserNamePasswordScreen} />
-          <Stack.Screen name="ContactNumberScreen" component={ContactNumberScreen} />
-          <Stack.Screen name="DisplayNameScreen" component={DisplayNameScreen} />
-          <Stack.Screen name="EmailScreen" component={EmailScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>

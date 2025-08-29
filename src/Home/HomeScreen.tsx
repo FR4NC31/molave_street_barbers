@@ -1,6 +1,9 @@
 import { View, Text, TouchableOpacity, ImageBackground, ScrollView } from 'react-native'
 import React, { useState } from 'react'
+import { useNavigation } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../Types/navigation';
 
 //component
 import TabScreen from '../Components/BottomTab'
@@ -8,6 +11,11 @@ import StatusBarWrapper from '../Components/StatusBarWrapper'
 import Carousel from '../Components/Carousel';
 import AppointmentNotif from './(tabs)/AppointmentNotif';
 import Profiles from './(tabs)/Profiles';
+
+type HomeScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'Appointment'
+  >
 
 export default function HomeScreen() {
    const [fontsLoaded] = useFonts({
@@ -18,6 +26,8 @@ export default function HomeScreen() {
     if (!fontsLoaded) return null;
 
     const [activeTab, setActiveTab] = useState('Home');
+
+    const navigation = useNavigation<HomeScreenNavigationProp>();
 
     const handleTabPress = (tab: string) => {
       setActiveTab(tab);
@@ -50,7 +60,7 @@ export default function HomeScreen() {
                     resizeMode='cover'
                     imageStyle={{ borderRadius: 16 }}
                   >
-                    <TouchableOpacity className='absolute bottom-10 bg-black rounded-3xl w-40 h-12 justify-center items-center'>
+                    <TouchableOpacity onPress={() => navigation.navigate('Appointment')} className='absolute bottom-10 bg-black rounded-3xl w-40 h-12 justify-center items-center'>
                       <Text className='text-white text-lg font-satoshibold'>Book Now</Text>
                     </TouchableOpacity>
                   </ImageBackground>
